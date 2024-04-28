@@ -11,13 +11,17 @@ import Reviews from './components/reviews/Reviews';
 import NotFound from './components/notFound/notFound';
 import Movie from './components/model/Movie';
 
+interface Review {
+  body: string;
+}
+
 function App(): React.JSX.Element {
 
   const url = baseURL;
 
   const [movies, setMovies] = useState<Movie[] | undefined>();
   const [movie, setMovie] = useState<Movie | undefined>();
-  const [reviews, setReviews] = useState<string[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const getMovies = async (): Promise<void> => {
     
@@ -33,7 +37,7 @@ function App(): React.JSX.Element {
 
     await axios.get(url + `/api/v1/movies/${movieId}`).then((response) => {
       setMovie(response.data);
-      setReviews(response.data.reviews || []);
+      setReviews(response.data.reviewIds);
     }
     ).catch((error: Error | AxiosError) => {
       console.error(error);

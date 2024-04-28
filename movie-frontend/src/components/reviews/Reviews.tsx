@@ -4,13 +4,14 @@ import { useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import ReviewForm from '../reviewForm/ReviewForm';
 import Movie from '../model/Movie';
+import Review from '../model/Review';
 import axios, {AxiosError} from 'axios';
 
 interface ReviewsProps {
     getMovie: (movieId: string) => void;
     movie: Movie | undefined;
-    reviews: string[] | undefined;
-    setReviews: (reviews: string[]) => void;
+    reviews: Review[] | undefined;
+    setReviews: (reviews: Review[]) => void;
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews }) => {
@@ -30,7 +31,7 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
         if (!rev) return;
 
         await axios.post(url + "/api/v1/reviews", { reviewBody: rev?.value, imdbId: movieId }).then(() => {
-            const updatedReviews: string[] = [...reviews ?? [], rev?.value ?? ''];
+            const updatedReviews: Review[] = [...(reviews ?? []), { body: rev.value }];
             if (rev) rev.value = "";
             setReviews(updatedReviews);
         }).catch((error: Error | AxiosError) => {
@@ -69,10 +70,11 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
                     }
                     {
                         reviews?.map((review, index) => {
+                            const key = `re_${index}`;
                             return (
-                                <Row key={index}>
+                                <Row key={key}>
                                     <Col>
-                                        <div>{review}</div>
+                                        <p>{review.body}</p>
                                     </Col>
                                 </Row>
                             )
