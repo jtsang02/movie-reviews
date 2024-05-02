@@ -22,6 +22,7 @@ public class Movie {
     private String releaseDate;
     private String trailerLink;
     private String poster;
+    private Boolean watched;
     private List<String> genres;
     private List<String> backdrops;
     @DocumentReference
