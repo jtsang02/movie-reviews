@@ -1,11 +1,11 @@
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useState, useRef, RefObject } from 'react';
 import baseURL from '../../api/baseURL';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import ReviewForm from '../reviewForm/ReviewForm';
 import Movie from '../model/Movie';
 import Review from '../model/Review';
-import axios, {AxiosError} from 'axios';
+import axios, { AxiosError } from 'axios';
 
 interface ReviewsProps {
     getMovie: (movieId: string) => void;
@@ -20,10 +20,12 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
     const revText: RefObject<HTMLTextAreaElement | null> = useRef(null);
     const params = useParams<{ movieId: string }>();
     const movieId = params.movieId;
-
+    const [isWatched, setIsWatched] = useState<boolean>(movie?.watched ?? false);
+    
     useEffect(() => {
         getMovie(movieId ?? '');
-    }, [getMovie, movieId])
+        console.log('watched', movie?.watched);
+    }, [movieId]);
 
     const addReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,6 +41,17 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
         });
     };
 
+    const toggleWatched = async () => {
+        if (!movie) return;
+
+        await axios.patch(url + `/api/v1/movies/${movieId}`, { watched: !isWatched }).then(() => {
+            setIsWatched(!isWatched);
+        }
+        ).catch((error: Error | AxiosError) => {
+            console.error(error);
+        });
+    };
+
     return (
         <Container>
             <Row>
@@ -49,37 +62,35 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
                     <img src={movie?.poster} alt="" />
                 </Col>
                 <Col>
-                    {
-                        <>
-                            <Row>
+                    {<>
+                        <Row>
+                            <Col>
+                                <ReviewForm
+                                    handleSubmit={(e: React.FormEvent) => addReview(e)}
+                                    revText={revText as RefObject<HTMLTextAreaElement>}
+                                    labelText="Write a Review?"
+                                    defaultValue=""
+                                    toggleWatched={toggleWatched}
+                                    isWatched={isWatched}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <hr />
+                            </Col>
+                        </Row>
+                    </>}
+                    {reviews?.map((review, index) => {
+                        const key = `re_${index}`;
+                        return (
+                            <Row key={key}>
                                 <Col>
-                                    <ReviewForm
-                                        handleSubmit={(e: React.FormEvent) => addReview(e)}
-                                        revText={revText as RefObject<HTMLTextAreaElement>}
-                                        labelText="Write a Review?"
-                                        defaultValue=""
-                                    />
+                                    <p>{review.body}</p>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col>
-                                    <hr />
-                                </Col>
-                            </Row>
-                        </>
-                    }
-                    {
-                        reviews?.map((review, index) => {
-                            const key = `re_${index}`;
-                            return (
-                                <Row key={key}>
-                                    <Col>
-                                        <p>{review.body}</p>
-                                    </Col>
-                                </Row>
-                            )
-                        })
-                    }
+                        )
+                    })}
                 </Col>
             </Row>
             <Row>

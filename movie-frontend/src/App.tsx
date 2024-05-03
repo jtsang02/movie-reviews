@@ -10,6 +10,7 @@ import Trailer from './components/trailer/Trailer';
 import Reviews from './components/reviews/Reviews';
 import NotFound from './components/notFound/notFound';
 import Movie from './components/model/Movie';
+import WatchList from './components/watchList/watchList';
 
 interface Review {
   body: string;
@@ -61,6 +62,7 @@ function App(): React.JSX.Element {
                                                       reviews={reviews}
                                                       setReviews={setReviews}
                                                     />} />
+          <Route path="/WatchList" element={<WatchList />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

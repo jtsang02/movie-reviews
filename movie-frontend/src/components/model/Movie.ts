@@ -5,6 +5,7 @@ interface Movie {
     backdrops: string[];
     poster: string;
     title: string;
+    watched: boolean;
     trailerLink: string;
     reviewIds: Review[];
     releaseDate: string;
