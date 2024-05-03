@@ -9,7 +9,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({movies}) => {
   return (
     <div>
-      <Hero movies={movies.slice(0, 5)} />
+      <Hero movies={movies} />
     </div>
   )
 }

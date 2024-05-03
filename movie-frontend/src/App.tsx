@@ -47,7 +47,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     getMovies();
-  }, [])
+  }, [movies])
 
   return (
     <div className="App">
@@ -62,7 +62,7 @@ function App(): React.JSX.Element {
                                                       reviews={reviews}
                                                       setReviews={setReviews}
                                                     />} />
-          <Route path="/WatchList" element={<WatchList />} />
+          <Route path="/WatchList" element={<WatchList movies={movies || []} />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
