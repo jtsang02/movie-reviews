@@ -12,7 +12,7 @@ interface ReviewsProps {
     movie: Movie | undefined;
     reviews: Review[] | undefined;
     setReviews: (reviews: Review[]) => void;
-    toggleWatched: (Movie: Movie) => void;
+    toggleWatched: () => void;
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews, toggleWatched }) => {
@@ -58,7 +58,7 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews,
                                     revText={revText as RefObject<HTMLTextAreaElement>}
                                     labelText="Write a Review?"
                                     defaultValue=""
-                                    toggleWatched={() => toggleWatched(movie as Movie)}
+                                    toggleWatched={toggleWatched}
                                     isWatched={movie?.watched ?? false}
                                 />
                             </Col>
