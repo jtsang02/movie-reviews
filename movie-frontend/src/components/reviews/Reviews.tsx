@@ -12,10 +12,10 @@ interface ReviewsProps {
     movie: Movie | undefined;
     reviews: Review[] | undefined;
     setReviews: (reviews: Review[]) => void;
-    setMovie: (movie: Movie) => void;
+    toggleWatched: (Movie: Movie) => void;
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews, setMovie }) => {
+const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews, toggleWatched }) => {
 
     const url = baseURL;
     const revText: RefObject<HTMLTextAreaElement | null> = useRef(null);
@@ -24,7 +24,6 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews,
     
     useEffect(() => {
         getMovie(movieId ?? '');
-        console.log('watched', movie?.watched);
     }, [movieId]);
 
     async function addReview(e: React.FormEvent) {
@@ -40,21 +39,6 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews,
             console.error(error);
         });
     }
-
-    const toggleWatched = async () => {
-        if (!movie) return;
-
-        const isWatched = movie.watched;
-
-        await axios.patch(url + `/api/v1/movies/${movieId}`, { watched: !isWatched }).then(() => {
-            const updatedMovie = { ...movie, watched: !isWatched };
-            setMovie(updatedMovie);
-            console.log('watched', updatedMovie.watched);
-        }
-        ).catch((error: Error | AxiosError) => {
-            console.error(error);
-        });
-    };
 
     return (
         <Container>
@@ -74,7 +58,7 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews,
                                     revText={revText as RefObject<HTMLTextAreaElement>}
                                     labelText="Write a Review?"
                                     defaultValue=""
-                                    toggleWatched={() => toggleWatched()}
+                                    toggleWatched={() => toggleWatched(movie as Movie)}
                                     isWatched={movie?.watched ?? false}
                                 />
                             </Col>

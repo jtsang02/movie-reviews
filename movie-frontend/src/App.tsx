@@ -26,7 +26,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     getMovies();
-  }, [movies])
+  }, [movies, movie, reviews])
 
   const getMovies = async (): Promise<void> => {
 
@@ -49,24 +49,48 @@ function App(): React.JSX.Element {
     });
   }
 
+  const toggleWatched = async (movie: Movie): Promise<void> => {
+    if (!movie) {
+      console.error('Movie is undefined');
+      return;
+    }
+
+    const isWatched = movie.watched;
+
+    await axios.patch(url + `/api/v1/movies/${movie.imdbId}`, { watched: !isWatched }).then(() => {
+      const updatedMovie = { ...movie, watched: !isWatched };
+      setMovie(updatedMovie);
+    }
+    ).catch((error: Error | AxiosError) => {
+      console.error(error);
+    });
+  };
+
   return (
     <div className="App">
       <Header />
-      <Routes>
-        <Route path="/" element={<Layout />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home movies={movies || []} />} />
           <Route path="/Trailer/:ytTrailerId" element={<Trailer />} />
-          <Route path="/Reviews/:movieId" element={<Reviews
-            getMovie={getMovie}
-            movie={movie}
-            reviews={reviews}
-            setReviews={setReviews}
-            setMovie = {setMovie}
-          />} />
-          <Route path="/WatchList" element={<WatchList movies={movies || []} />} />
+          <Route path="/Reviews/:movieId" element={
+            <Reviews
+              getMovie={getMovie}
+              movie={movie}
+              reviews={reviews}
+              setReviews={setReviews}
+              toggleWatched={() => toggleWatched(movie as Movie)}
+            />} 
+          />
+          <Route path="/WatchList" element={
+            <WatchList 
+              movies={movies || []}
+              toggleWatched={toggleWatched}
+            />}
+          />
           <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+          </Route>
+        </Routes>
     </div>
   );
 }
