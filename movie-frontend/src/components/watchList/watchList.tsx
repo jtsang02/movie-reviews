@@ -6,7 +6,6 @@ import Movie from '../../model/Movie';
 import { FaYoutube } from "react-icons/fa";
 
 
-
 interface watchListProps {
     movies: Movie[];
 }
@@ -20,7 +19,7 @@ const WatchList: React.FC<watchListProps> = ({movies}) => {
                 <th>Title</th>
                 <th>Release Date</th>
                 <th>Trailer Link</th>
-                <th>Watch Status</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>

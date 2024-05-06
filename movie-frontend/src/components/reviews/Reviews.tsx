@@ -12,22 +12,22 @@ interface ReviewsProps {
     movie: Movie | undefined;
     reviews: Review[] | undefined;
     setReviews: (reviews: Review[]) => void;
+    setMovie: (movie: Movie) => void;
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews }) => {
+const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews, setMovie }) => {
 
     const url = baseURL;
     const revText: RefObject<HTMLTextAreaElement | null> = useRef(null);
     const params = useParams<{ movieId: string }>();
     const movieId = params.movieId;
-    const [isWatched, setIsWatched] = useState<boolean>(movie?.watched ?? false);
     
     useEffect(() => {
         getMovie(movieId ?? '');
         console.log('watched', movie?.watched);
     }, [movieId]);
 
-    const addReview = async (e: React.FormEvent) => {
+    async function addReview(e: React.FormEvent) {
         e.preventDefault();
         const rev = revText.current;
         if (!rev) return;
@@ -39,13 +39,17 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
         }).catch((error: Error | AxiosError) => {
             console.error(error);
         });
-    };
+    }
 
     const toggleWatched = async () => {
         if (!movie) return;
 
+        const isWatched = movie.watched;
+
         await axios.patch(url + `/api/v1/movies/${movieId}`, { watched: !isWatched }).then(() => {
-            setIsWatched(!isWatched);
+            const updatedMovie = { ...movie, watched: !isWatched };
+            setMovie(updatedMovie);
+            console.log('watched', updatedMovie.watched);
         }
         ).catch((error: Error | AxiosError) => {
             console.error(error);
@@ -70,8 +74,8 @@ const Reviews: React.FC<ReviewsProps> = ({ getMovie, movie, reviews, setReviews 
                                     revText={revText as RefObject<HTMLTextAreaElement>}
                                     labelText="Write a Review?"
                                     defaultValue=""
-                                    toggleWatched={toggleWatched}
-                                    isWatched={isWatched}
+                                    toggleWatched={() => toggleWatched()}
+                                    isWatched={movie?.watched ?? false}
                                 />
                             </Col>
                         </Row>

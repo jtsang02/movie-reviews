@@ -24,8 +24,12 @@ function App(): React.JSX.Element {
   const [movie, setMovie] = useState<Movie | undefined>();
   const [reviews, setReviews] = useState<Review[]>([]);
 
+  useEffect(() => {
+    getMovies();
+  }, [movies])
+
   const getMovies = async (): Promise<void> => {
-    
+
     await axios.get(url + '/api/v1/movies').then((response) => {
       setMovies(response.data);
     }
@@ -45,10 +49,6 @@ function App(): React.JSX.Element {
     });
   }
 
-  useEffect(() => {
-    getMovies();
-  }, [movies])
-
   return (
     <div className="App">
       <Header />
@@ -57,11 +57,12 @@ function App(): React.JSX.Element {
           <Route path="/" element={<Home movies={movies || []} />} />
           <Route path="/Trailer/:ytTrailerId" element={<Trailer />} />
           <Route path="/Reviews/:movieId" element={<Reviews
-                                                      getMovie={getMovie}
-                                                      movie={movie}
-                                                      reviews={reviews}
-                                                      setReviews={setReviews}
-                                                    />} />
+            getMovie={getMovie}
+            movie={movie}
+            reviews={reviews}
+            setReviews={setReviews}
+            setMovie = {setMovie}
+          />} />
           <Route path="/WatchList" element={<WatchList movies={movies || []} />} />
           <Route path="*" element={<NotFound />} />
         </Route>
