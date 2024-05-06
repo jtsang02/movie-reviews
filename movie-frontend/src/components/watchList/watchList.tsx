@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import Movie from '../model/Movie';
+import Movie from '../../model/Movie';
 import { FaYoutube } from "react-icons/fa";
 
 

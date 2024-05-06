@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, RefObject } from 'react';
+import { useEffect, useRef, RefObject } from 'react';
 import baseURL from '../../api/baseURL';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import ReviewForm from '../reviewForm/ReviewForm';
-import Movie from '../model/Movie';
-import Review from '../model/Review';
+import Movie from '../../model/Movie';
+import Review from '../../model/Review';
 import axios, { AxiosError } from 'axios';
 
 interface ReviewsProps {

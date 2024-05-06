@@ -1,6 +1,6 @@
 import React from 'react';
 import Hero from '../hero/Hero';
-import Movie from '../model/Movie';
+import Movie from '../../model/Movie';
 
 interface HomeProps {
   movies: Movie[];
